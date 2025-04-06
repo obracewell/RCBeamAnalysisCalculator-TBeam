@@ -289,9 +289,14 @@
                    // Find matching bar configuration from the table
                     const barConfig = barTable.find(config => config.barSelection === barSelectionStr && config.rows === rows);
                     // Check if beam width b is sufficient
-                    if (barConfig && b < barConfig.bmin) {
+                    if (!barConfig) {
                         const outputDiv = document.getElementById('output');
-                        outputDiv.innerHTML = `<span class="error">Selected configuration ${barSelectionStr} requires a minimum beam width of ${barConfig.bmin} in. Increase b or choose a different bar configuration.</span>`;
+                        outputDiv.innerHTML = `<span class="error">Selected configuration ${barSelectionStrT} in ${rows} row(s) is not available. Please try a different layout.</span>`;
+                    return;
+                    }
+                    if (barConfig && bw < barConfig.bmin) {
+                        const outputDiv = document.getElementById('output');
+                        outputDiv.innerHTML = `<span class="error">Selected configuration ${barSelectionStr} requires a minimum web width of ${barConfig.bmin} in. Increase b<sub>w</sub> or choose a different bar configuration.</span>`;
                         return;
                      }
                 }
