@@ -40,6 +40,9 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
+        }
+        input:disabled {
+            background-color: #e0e0e0;
         } 
     </style>
 </head>
@@ -61,13 +64,23 @@
     <input type="number" id="fy"><br>
 
     <label for="As">Cross-sectional area of steel, A<sub>s</sub> (in<sup>2</sup>): </label>
-    <input type="number" id="As"><br>
+    <input type="number" id="As" oninput="toggleBarInputs()"><br>
 
     <div style="margin-left: 30px;">
     <label for="numBars">OR </label>
-    <input type="number" id="numBars" placeholder="Number of bars">
+    <select id="numBars" onchange="toggleAsInput()">
+        <option value="">Select number of bars</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+    </select>
     <label for="barSize">#</label>
-    <select id="barSize">
+    <select id="barSize" onchange="toggleAsInput()">
         <option value="">Select bar size</option>
         <option value="3">3</option>
         <option value="4">4</option>
@@ -80,6 +93,13 @@
         <option value="11">11</option>
         <option value="14">14</option>
         <option value="18">18</option>
+    </select>
+    <label for="rows">Rows of Bars:</label>
+    <select id="rows" onchange="toggleAsInput()">
+        <option value="">Select</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
     </select>
     <br>
     </div>
@@ -117,6 +137,130 @@
             14: 2.25,
             18: 4.00,
         };
+        //bmin for bar selection
+          const barTable = [
+          { barSelection: "2#4 bars", area: 0.39, rows: 1, bmin: 6.8 },
+          { barSelection: "3#4 bars", area: 0.58, rows: 1, bmin: 8.3 },
+          { barSelection: "4#4 bars", area: 0.78, rows: 1, bmin: 9.8 },
+          { barSelection: "4#4 bars", area: 0.78, rows: 2, bmin: 6.8 },
+          { barSelection: "5#4 bars", area: 0.98, rows: 1, bmin: 11.3 },
+          { barSelection: "6#4 bars", area: 1.18, rows: 1, bmin: 12.8 },
+          { barSelection: "6#4 bars", area: 1.18, rows: 2, bmin: 8.3 },
+          { barSelection: "6#4 bars", area: 1.18, rows: 3, bmin: 6.8 },
+          { barSelection: "7#4 bars", area: 1.37, rows: 1, bmin: 14.3 },
+          { barSelection: "8#4 bars", area: 1.57, rows: 1, bmin: 15.8 },
+          { barSelection: "8#4 bars", area: 1.57, rows: 2, bmin: 9.8 },
+          { barSelection: "9#4 bars", area: 1.77, rows: 3, bmin: 8.3 },
+          { barSelection: "2#5 bars", area: 0.61, rows: 1, bmin: 6.9 },
+          { barSelection: "3#5 bars", area: 0.91, rows: 1, bmin: 8.5 },
+          { barSelection: "4#5 bars", area: 1.23, rows: 1, bmin: 10.2 },
+          { barSelection: "4#5 bars", area: 1.23, rows: 2, bmin: 6.9 },
+          { barSelection: "5#5 bars", area: 1.53, rows: 1, bmin: 11.8 },
+          { barSelection: "6#5 bars", area: 1.84, rows: 1, bmin: 13.4 },
+          { barSelection: "6#5 bars", area: 1.84, rows: 2, bmin: 8.5 },
+          { barSelection: "6#5 bars", area: 1.84, rows: 3, bmin: 6.9 },
+          { barSelection: "7#5 bars", area: 2.15, rows: 1, bmin: 15.0 },
+          { barSelection: "8#5 bars", area: 2.45, rows: 1, bmin: 16.7 },
+          { barSelection: "8#5 bars", area: 2.45, rows: 2, bmin: 10.2 },
+          { barSelection: "9#5 bars", area: 2.76, rows: 3, bmin: 8.5 },
+          { barSelection: "2#6 bars", area: 0.88, rows: 1, bmin: 7.0 },
+          { barSelection: "3#6 bars", area: 1.32, rows: 1, bmin: 8.8 },
+          { barSelection: "4#6 bars", area: 1.77, rows: 1, bmin: 10.5 },
+          { barSelection: "4#6 bars", area: 1.77, rows: 2, bmin: 7.0 },
+          { barSelection: "5#6 bars", area: 2.21, rows: 1, bmin: 12.3 },
+          { barSelection: "6#6 bars", area: 2.65, rows: 1, bmin: 14.0 },
+          { barSelection: "6#6 bars", area: 2.65, rows: 2, bmin: 8.8 },
+          { barSelection: "6#6 bars", area: 2.65, rows: 3, bmin: 7.0 },
+          { barSelection: "7#6 bars", area: 3.09, rows: 1, bmin: 15.8 },
+          { barSelection: "8#6 bars", area: 3.53, rows: 1, bmin: 17.5 },
+          { barSelection: "8#6 bars", area: 3.53, rows: 2, bmin: 10.5 },
+          { barSelection: "9#6 bars", area: 3.98, rows: 3, bmin: 8.8 },
+          { barSelection: "2#7 bars", area: 1.20, rows: 1, bmin: 7.2 },
+          { barSelection: "3#7 bars", area: 1.80, rows: 1, bmin: 9.0 },
+          { barSelection: "4#7 bars", area: 2.41, rows: 1, bmin: 10.9 },
+          { barSelection: "4#7 bars", area: 2.41, rows: 2, bmin: 7.2 },
+          { barSelection: "5#7 bars", area: 3.01, rows: 1, bmin: 12.8 },
+          { barSelection: "6#7 bars", area: 3.61, rows: 1, bmin: 14.7 },
+          { barSelection: "6#7 bars", area: 3.61, rows: 2, bmin: 9.0 },
+          { barSelection: "6#7 bars", area: 3.61, rows: 3, bmin: 7.2 },
+          { barSelection: "7#7 bars", area: 4.21, rows: 1, bmin: 16.5 },
+          { barSelection: "8#7 bars", area: 4.81, rows: 1, bmin: 18.4 },
+          { barSelection: "8#7 bars", area: 4.81, rows: 2, bmin: 10.9 },
+          { barSelection: "9#7 bars", area: 5.41, rows: 3, bmin: 9.0 },
+          { barSelection: "2#8 bars", area: 1.57, rows: 1, bmin: 7.3 },
+          { barSelection: "3#8 bars", area: 2.35, rows: 1, bmin: 9.3 },
+          { barSelection: "4#8 bars", area: 3.14, rows: 1, bmin: 11.3 },
+          { barSelection: "4#8 bars", area: 3.14, rows: 2, bmin: 7.3 },
+          { barSelection: "5#8 bars", area: 3.93, rows: 1, bmin: 13.3 },
+          { barSelection: "6#8 bars", area: 4.71, rows: 1, bmin: 15.3 },
+          { barSelection: "6#8 bars", area: 4.71, rows: 2, bmin: 9.3 },
+          { barSelection: "6#8 bars", area: 4.71, rows: 3, bmin: 7.3 },
+          { barSelection: "7#8 bars", area: 5.50, rows: 1, bmin: 17.3 },
+          { barSelection: "8#8 bars", area: 6.28, rows: 1, bmin: 19.3 },
+          { barSelection: "8#8 bars", area: 6.28, rows: 2, bmin: 11.3 },
+          { barSelection: "9#8 bars", area: 7.07, rows: 3, bmin: 9.3 },
+          { barSelection: "2#9 bars", area: 2.00, rows: 1, bmin: 7.6 },
+          { barSelection: "3#9 bars", area: 3.00, rows: 1, bmin: 9.8 },
+          { barSelection: "4#9 bars", area: 4.00, rows: 1, bmin: 12.1 },
+          { barSelection: "4#9 bars", area: 4.00, rows: 2, bmin: 7.6 },
+          { barSelection: "5#9 bars", area: 5.00, rows: 1, bmin: 14.3 },
+          { barSelection: "6#9 bars", area: 6.00, rows: 1, bmin: 16.6 },
+          { barSelection: "6#9 bars", area: 6.00, rows: 2, bmin: 9.8 },
+          { barSelection: "6#9 bars", area: 6.00, rows: 3, bmin: 7.6 },
+          { barSelection: "7#9 bars", area: 7.00, rows: 1, bmin: 18.8 },
+          { barSelection: "8#9 bars", area: 8.00, rows: 1, bmin: 21.1 },
+          { barSelection: "8#9 bars", area: 8.00, rows: 2, bmin: 12.1 },
+          { barSelection: "9#9 bars", area: 9.00, rows: 3, bmin: 9.8 },
+          { barSelection: "2#10 bars", area: 2.53, rows: 1, bmin: 7.8 },
+          { barSelection: "3#10 bars", area: 3.79, rows: 1, bmin: 10.4 },
+          { barSelection: "4#10 bars", area: 5.06, rows: 1, bmin: 12.9 },
+          { barSelection: "4#10 bars", area: 5.06, rows: 2, bmin: 7.8 },
+          { barSelection: "5#10 bars", area: 6.33, rows: 1, bmin: 15.5 },
+          { barSelection: "6#10 bars", area: 7.59, rows: 1, bmin: 18.0 },
+          { barSelection: "6#10 bars", area: 7.59, rows: 2, bmin: 10.4 },
+          { barSelection: "6#10 bars", area: 7.59, rows: 3, bmin: 7.8 },
+          { barSelection: "7#10 bars", area: 8.86, rows: 1, bmin: 20.5 },
+          { barSelection: "8#10 bars", area: 10.12, rows: 1, bmin: 23.1 },
+          { barSelection: "8#10 bars", area: 10.12, rows: 2, bmin: 12.9 },
+          { barSelection: "9#10 bars", area: 10.12, rows: 3, bmin: 10.4 },
+          { barSelection: "2#11 bars", area: 3.12, rows: 1, bmin: 8.1 },
+          { barSelection: "3#11 bars", area: 4.68, rows: 1, bmin: 10.9 },
+          { barSelection: "4#11 bars", area: 6.25, rows: 1, bmin: 13.8 },
+          { barSelection: "4#11 bars", area: 6.25, rows: 2, bmin: 8.1 },
+          { barSelection: "5#11 bars", area: 7.81, rows: 1, bmin: 16.6 },
+          { barSelection: "6#11 bars", area: 9.37, rows: 1, bmin: 19.4 },
+          { barSelection: "6#11 bars", area: 9.37, rows: 2, bmin: 10.9 },
+          { barSelection: "6#11 bars", area: 9.37, rows: 3, bmin: 8.1 },
+          { barSelection: "7#11 bars", area: 10.94, rows: 1, bmin: 22.2 },
+          { barSelection: "8#11 bars", area: 12.50, rows: 1, bmin: 25.0 },
+          { barSelection: "8#11 bars", area: 12.50, rows: 2, bmin: 13.8 },
+          { barSelection: "9#11 bars", area: 14.06, rows: 3, bmin: 10.9 },
+          { barSelection: "2#14 bars", area: 4.50, rows: 1, bmin: 8.9 },
+          { barSelection: "3#14 bars", area: 6.75, rows: 1, bmin: 12.3 },
+          { barSelection: "4#14 bars", area: 9.00, rows: 1, bmin: 15.7 },
+          { barSelection: "4#14 bars", area: 9.00, rows: 2, bmin: 8.9 },
+          { barSelection: "5#14 bars", area: 11.25, rows: 1, bmin: 19.0 },
+          { barSelection: "6#14 bars", area: 13.50, rows: 1, bmin: 22.4 },
+          { barSelection: "6#14 bars", area: 13.50, rows: 2, bmin: 12.3 },
+          { barSelection: "6#14 bars", area: 13.50, rows: 3, bmin: 8.9 },
+          { barSelection: "7#14 bars", area: 15.75, rows: 1, bmin: 25.8 },
+          { barSelection: "8#14 bars", area: 18.00, rows: 1, bmin: 29.2 },
+          { barSelection: "8#14 bars", area: 18.00, rows: 2, bmin: 15.7 },
+          { barSelection: "9#14 bars", area: 20.25, rows: 3, bmin: 12.3 },
+          { barSelection: "2#18 bars", area: 8.00, rows: 1, bmin: 10.6 },
+          { barSelection: "3#18 bars", area: 12.00, rows: 1, bmin: 15.1 },
+          { barSelection: "4#18 bars", area: 16.00, rows: 1, bmin: 19.6 },
+          { barSelection: "4#18 bars", area: 16.00, rows: 2, bmin: 10.6 },
+          { barSelection: "5#18 bars", area: 20.00, rows: 1, bmin: 24.1 },
+          { barSelection: "6#18 bars", area: 24.00, rows: 1, bmin: 28.6 },
+          { barSelection: "6#18 bars", area: 24.00, rows: 1, bmin: 15.1 },
+          { barSelection: "6#18 bars", area: 24.00, rows: 1, bmin: 10.6 },
+          { barSelection: "7#18 bars", area: 28.00, rows: 1, bmin: 33.1 },
+          { barSelection: "8#18 bars", area: 32.00, rows: 1, bmin: 37.7 },
+          { barSelection: "8#18 bars", area: 32.00, rows: 2, bmin: 19.4 },
+          { barSelection: "9#19 bars", area: 36.00, rows: 3, bmin: 15.1 }
+        ];
+        
         function performAnalysis() {
             // Get input values
             const fc = parseFloat(document.getElementById('fc').value);
@@ -128,12 +272,28 @@
             const hf = parseFloat(document.getElementById('hf').value);
 
             // Check for bar size alternative
+            const barSize = parseInt(document.getElementById('barSize').value);
+            const numBars = parseFloat(document.getElementById('numBars').value);
+            const rows = parseInt(document.getElementById('rows').value);
             if (isNaN(As) || As === 0) {
-                const barSize = parseInt(document.getElementById('barSize').value);
-                const numBars = parseFloat(document.getElementById('numBars').value);
-
+                if (isNaN(rows)) {
+                    const outputDiv = document.getElementById('output');
+                    outputDiv.innerHTML = `<span class="error">Please select the number of rows.</span>`;
+                return;
+                }
+                
                 if (!isNaN(barSize) && barAreaTable[barSize] && !isNaN(numBars)) {
                     As = barAreaTable[barSize] * numBars;
+                    // Create the bar selection string, e.g., "4#5 bars"
+                    const barSelectionStr = `${numBars}#${barSize} bars`;
+                   // Find matching bar configuration from the table
+                    const barConfig = barTable.find(config => config.barSelection === barSelectionStr && config.rows === rows);
+                    // Check if beam width b is sufficient
+                    if (barConfig && b < barConfig.bmin) {
+                        const outputDiv = document.getElementById('output');
+                        outputDiv.innerHTML = `<span class="error">Selected configuration ${barSelectionStr} requires a minimum beam width of ${barConfig.bmin} in. Increase b or choose a different bar configuration.</span>`;
+                        return;
+                     }
                 }
             }
             
@@ -458,6 +618,46 @@
 
             Plotly.newPlot('graph', traces, layout, { staticPlot: true });
         }
+        function toggleAsInput() {
+            const barSize = document.getElementById('barSize').value;
+            const numBars = document.getElementById('numBars').value;
+            const rows = parseInt(document.getElementById('rows').value);
+            const AsInput = document.getElementById('As');
+
+            // Disable As input if all bar config inputs are filled
+            if (barSize && numBars && rows) {
+                AsInput.disabled = true;
+                AsInput.placeholder = "Disabled (using bar selection)";
+                AsInput.value = ""; // Optional: clear any existing As
+            } else {
+                AsInput.disabled = false;
+                AsInput.placeholder = "";
+            }
+        }
+        function toggleBarInputs() {
+            const AsInput = document.getElementById('As');
+            const barSize = document.getElementById('barSize');
+            const numBars = document.getElementById('numBars');
+            const rows = document.getElementById('rows');
+
+            // Disable bar selection if As is entered
+            if (AsInput.value.trim() !== "") {
+                barSize.disabled = true;
+                numBars.disabled = true;
+                rows.disabled = true;
+
+            // Optional: Clear bar inputs
+                barSize.value = "";
+                numBars.value = "";
+                rows.value = "";
+            } else {
+                // Enable bar inputs again
+                 barSize.disabled = false;
+                numBars.disabled = false;
+                rows.disabled = false;
+            }
+    toggleAsInput(); // Also update As input state
+    }
     </script>
 </body>
 </html>
