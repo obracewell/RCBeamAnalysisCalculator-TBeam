@@ -291,7 +291,7 @@
                     // Check if beam width b is sufficient
                     if (!barConfig) {
                         const outputDiv = document.getElementById('output');
-                        outputDiv.innerHTML = `<span class="error">Selected configuration ${barSelectionStrT} in ${rows} row(s) is not available. Please try a different layout.</span>`;
+                        outputDiv.innerHTML = `<span class="error">Selected configuration ${barSelectionStr} in ${rows} row(s) is not available. Please try a different layout.</span>`;
                     return;
                     }
                     if (barConfig && bw < barConfig.bmin) {
