@@ -663,6 +663,34 @@
             }
     toggleAsInput(); // Also update As input state
     }
+        
+    function copyGraphAsImage() {
+    const graphDiv = document.getElementById('graph');
+
+        Plotly.toImage(graphDiv, { format: 'png' }).then(function(dataUrl) {
+        fetch(dataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                    alert("Graph image copied to clipboard!");
+                }).catch(() => {
+                    alert("Failed to copy image. Your browser may not support image clipboard copying.");
+                });
+            });
+    });
+}
+
+function downloadGraphImage() {
+    const graphDiv = document.getElementById('graph');
+
+    Plotly.toImage(graphDiv, { format: 'png' }).then(function(dataUrl) {
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = 'SRBAnalysisGraph.png';
+        link.click();
+    });
+}
     </script>
 </body>
 </html>
