@@ -409,10 +409,10 @@
             document.getElementById('output').innerHTML = finalOutput;
 
             // Plot the graph
-            plotGraph(ba, beff, bw, hf, d, c, a);
+            plotGraph(ba, beff, bw, hf, d, c, a, fc, fy, As);
         }
 
-        function plotGraph(ba, beff, bw, hf, d, c, a) {
+        function plotGraph(ba, beff, bw, hf, d, c, a, fc, fy, As) {
             const h = d + 2;
             const x_range = [-0.03 - beff * 0.001, -0.03, 0.06];
 
