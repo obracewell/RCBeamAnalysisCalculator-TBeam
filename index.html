@@ -729,6 +729,8 @@
             layout.shapes = [circle];
 
             Plotly.newPlot('graph', traces, layout, { staticPlot: true });
+
+            document.getElementById("graph-buttons").style.display = "block";
         }
         function toggleAsInput() {
             const barSize = document.getElementById('barSize').value;
