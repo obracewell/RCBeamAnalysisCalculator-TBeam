@@ -87,6 +87,46 @@
         .page-content {
             padding: 0px 60px;
         }
+        .modal {
+          display: none; 
+          position: fixed;
+          z-index: 999;
+          padding-top: 60px;
+          left: 0; top: 0;
+          width: 100%; height: 100%;
+          overflow: auto;
+          background-color: rgba(0,0,0,0.6); /* Dimmed background */
+        }
+        .modal-content {
+          position: relative;
+          margin: auto;
+          background-color: white;
+          padding: 20px;
+          border-radius: 8px;
+          width: 334px;
+          height: 200px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .modal-img {
+          max-width: 100%;
+          height: auto;
+        }
+        .close-btn {
+          position: absolute;
+          top: 10px;
+          right: 14px;
+          font-size: 26px;
+          font-weight: bold;
+          color: red;
+          background: none;
+          border: none;
+          cursor: pointer;
+          z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -168,7 +208,9 @@
 
     <label for="hf">Height of flange, h<sub>f</sub> (in): </label>
     <input type="number" id="hf"><br>
-    
+
+    <a href="#" onclick="showModal(); return false;" class="info-link">Important Input Tip!</a>
+    <br>
     <button onclick="performAnalysis()">Calculate</button>
 
     <div id="output" class="output"></div>
@@ -800,7 +842,24 @@ function downloadGraphImage() {
         link.click();
     });
 }
+
+function showModal() {
+  document.getElementById('infoModal').style.display = 'block';
+}
+
+function closeModal() {
+  document.getElementById('infoModal').style.display = 'none';
+}
+        
     </script>
+
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <img src="https://raw.githubusercontent.com/obracewell/RCColumnDesignCalculator-Square/refs/heads/main/assets/resettipimage.png" alt="Refresh website if changing inputs" class="modal-img">
+  </div>
+</div>
+    
 <footer class="site-footer">
     <p>Reinforced Concrete Calculator created by Olivia Bracewell, UF Herbert Wertheim College of Engineering</p>
 </footer>
