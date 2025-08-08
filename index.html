@@ -163,10 +163,21 @@
     <p class="success">Input the following values:</p>
     
     <label for="fc">Compressive stress of concrete, f'<sub>c</sub> (psi): </label>
-    <input type="number" id="fc"><br>
+    <select id="fc">
+        <option value="">Select</option>
+        <option value="3000">3000</option>
+        <option value="4000">4000</option>
+    </select>
+    <br>
 
     <label for="fy">Yield stress of steel, f<sub>y</sub> (psi): </label>
-    <input type="number" id="fy"><br>
+    <select id="fy">
+        <option value="">Select</option>
+        <option value="40000">40000</option>
+        <option value="50000">50000</option>
+        <option value="60000">60000</option>
+    </select>
+    <br>
 
     <label for="As">Cross-sectional area of steel, A<sub>s</sub> (in<sup>2</sup>): </label>
     <input type="number" id="As" oninput="toggleBarInputs()"><br>
